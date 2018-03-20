@@ -22,6 +22,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('input', type=str)
     parser.add_argument('wordsim', type=str)
+    parser.add_argument('--output','-o', type=str)
     parser.add_argument('--dim', '-d', type=int, default=100)
     parser.add_argument('--epoch', '-e', type=int, default=20)
     parser.add_argument('--batchsize', '-b', type=int, default=1024)
@@ -32,7 +33,7 @@ def main():
 
     logger.info('Load Data')
     iterator = data.DataIterator(args.input, 
-            n_epoch=args.epoch, batchsize=args.batchsize
+            n_epoch=args.epoch, batchsize=args.batchsize,
             window=args.window, negative=args.negative)
 
     logger.info('Load Wordsim')
@@ -61,10 +62,13 @@ def main():
 
         losses.append(loss.data[0])
 
-        if i % 100 == 0:
+        if i % 1000 == 0:
             logger.info('Step={}; loss={:.3f}; pearson={:.3f}'.format(
                 i, np.mean(losses), m.eval_sim(wordsim)))
             losses = []
+        
+    m.save_w2v(args.output)
+
 
 if __name__ == '__main__':
     main()

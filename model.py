@@ -26,6 +26,17 @@ class CBoW(nn.Module):
         self.center_embed.weight.data.uniform_(-0.5 / dim, 0.5 / dim)
         self.context_embed.weight.data.zero_()
 
+    def save_w2v(self, path):
+        emb = np.array(self.center_embed.weight.data)
+
+        with open(path, 'w') as f:
+            f.write('{} {}\n'.format(*emb.shape))
+
+            for word, wid in self.word2id.items():
+                vec = emb[wid]
+
+                f.write('{} {}\n'.format(word, ' '.join('{:.6f}'.format(v) for v in vec)))
+
     def eval_sim(self, wordsim):
         emb = np.array(self.center_embed.weight.data)
         models = []
