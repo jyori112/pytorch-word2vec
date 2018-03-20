@@ -4,6 +4,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
+import logging, sys
+
+logger = logging.getLogger(__name__)
+logger.setLevel(10)
+ch = logging.StreamHandler(sys.stdout)
+ch.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s - %(message)s"))
+logger.addHandler(ch)
+
 
 def load_wordsim(path, word2id, header=True):
     with open(path) as f:
@@ -88,6 +96,7 @@ class DataIterator:
 
     def __iter__(self):
         for epoch in range(self.n_epoch):
+            logger.info('Epoch: {}'.format(epoch))
             # Shuffle Dataset
             self.order = np.random.permutation(
                             len(self.dataset) - 2 * self.window) + self.window
