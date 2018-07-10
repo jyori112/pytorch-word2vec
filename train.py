@@ -47,9 +47,9 @@ def main():
     logger.info('Start Training')
     losses = []
     for i, (center, context, negative) in enumerate(iterator):
-        center.to(device)
-        context.to(device)
-        negative.to(device)
+        center = center.to(device)
+        context = context.to(device)
+        negative = negative.to(device)
 
         loss = m.cbow(center, context, negative)
         loss.backward()
