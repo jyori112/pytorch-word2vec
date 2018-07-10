@@ -59,7 +59,7 @@ class DataIterator:
                 wid += 1
 
         # Convert dataset into word ids
-        self.dataset = np.array([self.token2id(token) for token in dataset], dtype=np.int32)
+        self.dataset = np.array([self.token2id(token) for token in dataset], dtype=np.int64)
 
         # Create Offset for convinience
         self.offset = np.concatenate((np.arange(1, window+1)[::-1], np.arange(1, window+1)))
@@ -80,7 +80,7 @@ class DataIterator:
 
     def build_neg_table(self, power=3/4, table_size=10000000):
         powered_sum = sum(count ** power for wid, count in self.id2count.items())
-        table = np.zeros(shape=(table_size, ),dtype=np.int32)
+        table = np.zeros(shape=(table_size, ),dtype=np.int64)
 
         idx = 0
         accum = 0.0
