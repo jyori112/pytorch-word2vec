@@ -3,7 +3,6 @@ from collections import Counter
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
 import logging, sys
 
 logger = logging.getLogger(__name__)
@@ -114,6 +113,6 @@ class DataIterator:
                 negative = self.neg_table[np.random.randint(len(self.neg_table), 
                                     size=(center.shape[0], self.negative))]
 
-                yield (Variable(torch.LongTensor(center)),
-                        Variable(torch.LongTensor(context)),
-                        Variable(torch.LongTensor(negative)))
+                yield (torch.tensor(center, dtype=torch.long),
+                        torch.tensor(context, dtype=torch.long),
+                        torch.tensor(negative, dtype=torch.long))

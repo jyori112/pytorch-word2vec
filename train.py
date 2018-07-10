@@ -5,8 +5,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-from torch.autograd import Variable
-
 import model, data
 import argparse
 import logging, sys
@@ -40,27 +38,25 @@ def main():
     wordsim = data.load_wordsim(args.wordsim, iterator.word2id)
 
     logger.info('Create Model')
-    if torch.cuda.is_available():
-        m = model.CBoW(iterator.n_vocab, args.dim).cuda()
-    else:
-        m = model.CBoW(iterator.n_vocab, args.dim)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    m = model.CBoW(iterator.n_vocab, args.dim)
+    m.to(device)
 
     opt = optim.Adam(m.parameters())
 
     logger.info('Start Training')
     losses = []
     for i, (center, context, negative) in enumerate(iterator):
-        if torch.cuda.is_available():
-            center = center.cuda()
-            context = context.cuda()
-            negative = negative.cuda()
+        center.to(device)
+        context.to(device)
+        negative.to(device)
 
         loss = m.cbow(center, context, negative)
         loss.backward()
         opt.step()
         opt.zero_grad()
 
-        losses.append(loss.data[0])
+        losses.append(float(loss))
 
         if i % 1000 == 0:
             logger.info('Step={}; loss={:.3f}; pearson={:.3f}'.format(
