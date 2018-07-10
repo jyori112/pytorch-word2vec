@@ -62,7 +62,7 @@ class DataIterator:
         self.dataset = np.array([self.token2id(token) for token in dataset], dtype=np.int64)
 
         # Create Offset for convinience
-        self.offset = np.concatenate((np.arange(1, window+1)[::-1], np.arange(1, window+1)))
+        self.offset = np.concatenate((-np.arange(1, window+1)[::-1], np.arange(1, window+1)))
 
         # Build Negative Tables
         self.neg_table = self.build_neg_table()
